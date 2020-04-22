@@ -1,0 +1,20 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+yapf = "*"
+blinker = "*"
+
+[packages]
+flask = "*"
+flask-mail = "*"
+pytest = "*"
+flask-restful = "*"
+webargs = "*"
+sqlalchemy = "*"
+flask-sqlalchemy = "*"
+
+[requires]
+python_version = "3.7"
