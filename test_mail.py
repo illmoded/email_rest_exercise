@@ -167,3 +167,5 @@ def test_send_bad_email(client):
         0] == 'Not a valid email address.'
     sent_emails = Email.query.filter_by(status='sent').all()
     assert len(sent_emails) == 0
+
+    # tests for attachments etc

@@ -5,11 +5,14 @@ from flask_mail import Message
 from flask_restful import Api, Resource
 from webargs import fields, validate
 from webargs.flaskparser import abort, parser, use_args, use_kwargs
+
 from database import Attachment as AttachmentModel
 from database import Email, EmailUser
 from extensions import db
 from extensions import mail as mailer
-from validators import attachment_must_exist_in_db, email_must_exist_in_db, attachment_must_not_be_connected_to_email
+from validators import (attachment_must_exist_in_db,
+                        attachment_must_not_be_connected_to_email,
+                        email_must_exist_in_db)
 
 mail_bp = Blueprint('mail', __name__)
 mail_api = Api(mail_bp)
@@ -102,6 +105,9 @@ class MailResource(Resource):
         except ConnectionRefusedError:
             print('Could not connect to SMTP server')
             status = 'failed'
+        except Exception as e:
+            print(f'Send error: {e}')
+            status = 'failed'
         else:
             status = 'sent'
         finally:
@@ -193,8 +199,8 @@ class Mail(MailResource):
              send_now=False,
              priority=None):
         """
-        http POST localhost:8887/email message='asd' subject='asd' sender_email='asd@asd.pl'\
-             receipents_emails='asd@asd.pl' send_now=true
+        http POST localhost:8887/email message='asd' subject='asd' sender_email='sendermail@a.pl'\
+             receipents_emails='firstmail@a.pl,secondmail@a.pl' send_now=true
         create new email
         """
         sender_id = self.get_user_id(sender_email)
