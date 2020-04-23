@@ -6,7 +6,6 @@ from extensions import db, mail
 import os
 
 def create_app(test_config=None):
-    print('sqlite://' + os.getcwd() + '/database.db')
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         # default config

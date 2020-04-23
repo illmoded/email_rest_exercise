@@ -5,7 +5,6 @@ from flask_mail import Message
 from flask_restful import Api, Resource
 from webargs import fields, validate
 from webargs.flaskparser import abort, parser, use_args, use_kwargs
-
 from database import Attachment as AttachmentModel
 from database import Email, EmailUser
 from extensions import db
@@ -100,8 +99,8 @@ class MailResource(Resource):
 
             msg.extra_headers = extra_headers
             mailer.send(msg)
-        except Exception as e:
-            print(e)
+        except ConnectionRefusedError:
+            print('Could not connect to SMTP server')
             status = 'failed'
         else:
             status = 'sent'
@@ -243,7 +242,6 @@ class MailList(MailResource):
         for email in pending_emails:
             # this could be sent to queue / async code (not in flask)
             status = self.send_saved_email(email)
-            print(status)
         return {'status': 'ok'}
 
 

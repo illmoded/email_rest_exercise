@@ -16,6 +16,8 @@ webargs = "*"
 sqlalchemy = "*"
 flask-sqlalchemy = "*"
 marshmallow = "*"
+pytest-flask = "*"
+pytest-flask-sqlalchemy = "*"
 
 [requires]
 python_version = "3.7"
