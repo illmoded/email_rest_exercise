@@ -36,6 +36,9 @@ class Email(db.Model):
     # one email can have multiple attachments
     attachments = db.relationship("Attachment", backref='attachment_in_email')
 
+    def __repr__(self):
+        return f"Email {self.id}"
+
 
 class EmailUser(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -45,4 +48,6 @@ class EmailUser(db.Model):
 class Attachment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     file_path = db.Column(db.String)
-    email_id = db.Column(db.Integer, db.ForeignKey('email.id'))
+    name = db.Column(db.String)
+    content_type = db.Column(db.String)
+    email_id = db.Column(db.Integer, db.ForeignKey('email.id'), nullable=True)

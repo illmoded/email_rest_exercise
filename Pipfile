@@ -15,6 +15,7 @@ flask-restful = "*"
 webargs = "*"
 sqlalchemy = "*"
 flask-sqlalchemy = "*"
+marshmallow = "*"
 
 [requires]
 python_version = "3.7"
