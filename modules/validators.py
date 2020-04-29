@@ -1,6 +1,6 @@
 from webargs import ValidationError
 
-from database import Email, Attachment
+from modules.database import Email, Attachment
 
 
 def email_must_exist_in_db(email_id):

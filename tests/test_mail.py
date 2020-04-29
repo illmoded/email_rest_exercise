@@ -3,9 +3,9 @@ import os
 import pytest
 
 from application import create_app
-from database import Attachment, Email, EmailUser
-from extensions import db as _db
-from extensions import mail
+from modules.database import Attachment, Email, EmailUser
+from modules.extensions import db as _db
+from modules.extensions import mail
 
 TESTDB = 'test_project.db'
 TESTDB_PATH = os.path.join(os.getcwd(), TESTDB)

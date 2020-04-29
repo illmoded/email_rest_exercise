@@ -6,13 +6,13 @@ from flask_restful import Api, Resource
 from webargs import fields, validate
 from webargs.flaskparser import abort, parser, use_args, use_kwargs
 
-from database import Attachment as AttachmentModel
-from database import Email, EmailUser
-from extensions import db
-from extensions import mail as mailer
-from validators import (attachment_must_exist_in_db,
-                        attachment_must_not_be_connected_to_email,
-                        email_must_exist_in_db)
+from modules.database import Attachment as AttachmentModel
+from modules.database import Email, EmailUser
+from modules.extensions import db
+from modules.extensions import mail as mailer
+from modules.validators import (attachment_must_exist_in_db,
+                                attachment_must_not_be_connected_to_email,
+                                email_must_exist_in_db)
 
 mail_bp = Blueprint('mail', __name__)
 mail_api = Api(mail_bp)
@@ -28,13 +28,13 @@ class MailResource(Resource):
         db.session.commit()
         return person
 
-    def get_user_id(self, email):
+    def get_or_create_user_id(self, email):
         sender = self.get_user(email)
         if not sender:
             sender = self.create_user(email=email)
         return sender.id
 
-    def get_users_ids(self, emails):
+    def get_or_create_user_ids(self, emails):
         recipents_ids = []
         for email in emails:
             recipent = self.get_user(email=email)
@@ -57,7 +57,7 @@ class MailResource(Resource):
         body = msg.body
         status = msg.status
         priority = msg.priority
-        sender_id = self.get_user_id(msg.sender)
+        sender_id = self.get_or_create_user_id(msg.sender)
 
         message = Email(subject=subject,
                         message=body,
@@ -65,7 +65,7 @@ class MailResource(Resource):
                         priority=priority,
                         sender_id=sender_id)
 
-        recipents_ids = self.get_users_ids(msg.recipients)
+        recipents_ids = self.get_or_create_user_ids(msg.recipients)
         for recipent_id in recipents_ids:
             recipent = EmailUser.query.get(recipent_id)
             message.recipents.append(recipent)
@@ -186,7 +186,8 @@ class Mail(MailResource):
         'send_now':
         fields.Boolean(required=False),
         'priority':
-        fields.Int(required=False)
+        fields.Int(required=False,
+                   validate=validate.Range(1, 5))  # 1 is highest, 5 is lowest
     }
 
     @use_kwargs(mail_args, location='json')
@@ -203,8 +204,8 @@ class Mail(MailResource):
              receipents_emails='firstmail@a.pl,secondmail@a.pl' send_now=true
         create new email
         """
-        sender_id = self.get_user_id(sender_email)
-        recipent_ids = self.get_users_ids(receipents_emails)
+        sender_id = self.get_or_create_user_id(sender_email)
+        recipent_ids = self.get_or_create_user_ids(receipents_emails)
 
         msg = Message(subject=subject,
                       recipients=receipents_emails,

@@ -1,9 +1,9 @@
 import os
 
 from flask import Flask
-from mail import mail_bp
-from extensions import db, mail
-import os
+
+from modules.extensions import db, mail
+from modules.mail import mail_bp
 
 
 def create_app(test_config=None):

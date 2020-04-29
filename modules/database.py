@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from extensions import db
+from modules.extensions import db
 
 recipents_rels = db.Table(
     'recipents',
