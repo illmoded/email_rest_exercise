@@ -4,6 +4,8 @@ from flask import Flask
 
 from modules.extensions import db, mail
 from modules.mail import mail_bp
+from modules.user import user_bp
+from modules.attachment import attachment_bp
 
 
 def create_app(test_config=None):
@@ -36,5 +38,7 @@ def create_app(test_config=None):
     with app.app_context():
         db.create_all()  # create database with app context
         app.register_blueprint(mail_bp)
+        app.register_blueprint(user_bp)
+        app.register_blueprint(attachment_bp)
 
     return app
